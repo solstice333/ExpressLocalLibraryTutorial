@@ -1,16 +1,16 @@
-let createError = require('http-errors');
-let express = require('express');
-let mongoose = require('mongoose');
-let local_library_db = 'mongodb://127.0.0.1:27017/local_library';
-let path = require('path');
-let favicon = require('serve-favicon');
-let logger = require('morgan');
-let cookieParser = require('cookie-parser');
-let bodyParser = require('body-parser');
-let process = require('process');
+const createError = require('http-errors');
+const express = require('express');
+const mongoose = require('mongoose');
+const local_library_db = 'mongodb://127.0.0.1:27017/local_library';
+const path = require('path');
+const favicon = require('serve-favicon');
+const logger = require('morgan');
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
+const process = require('process');
 
-let indexRouter = require('./routes/index');
-let usersRouter = require('./routes/users');
+const indexRouter = require('./routes/index');
+const usersRouter = require('./routes/users');
 
 mongoose.connect(local_library_db, { useNewUrlParser: true })
    .catch(err => {
@@ -18,7 +18,7 @@ mongoose.connect(local_library_db, { useNewUrlParser: true })
       process.exit(1);
    });
 
-let app = express();
+const app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
