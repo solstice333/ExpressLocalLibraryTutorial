@@ -3,6 +3,7 @@ const Author = require('../models/author');
 const Genre = require('../models/genre');
 const BookInstance = require('../models/bookinstance');
 const async = require('async');
+const createError = require('http-errors');
 
 exports.index = function(req, res) {
    async.parallel({
@@ -34,8 +35,29 @@ exports.bookList = function(req, res, next) {
 };
 
 // display detail page for a specific book
-exports.bookDetail = function(req, res) {
-   res.send('NOT IMPLEMENTED: Book detail: ' + req.params.id);
+exports.bookDetail = function(req, res, next) {
+   async.parallel(
+      {
+         book: cb => 
+            Book.findById(req.params.id)
+               .populate('genre')
+               .populate('author')
+               .exec(cb),
+         bookInstances: cb => BookInstance.find({ book: req.params.id }, cb)
+      },
+      (err, results) => {
+         if (err) next(err);
+         if (!results.book) next(createError(404, 'Book not found'));   
+         res.render(
+            'bookDetail', 
+            { 
+               title: 'Title', 
+               book: results.book,
+               bookInstances: results.bookInstances
+            }
+         );
+      }
+   );
 };
 
 // display book create form on GET

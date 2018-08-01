@@ -38,7 +38,7 @@ exports.genreDetail = function(req, res, next) {
             }
          );
       }
-   )
+   );
 };
 
 // display Genre create form on GET
