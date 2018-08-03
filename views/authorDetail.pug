@@ -1,0 +1,16 @@
+extends layout
+
+block content
+   h1 Author: #{author.name}
+   p (#{author.date_of_birth_formatted || "Unknown"} - #{author.date_of_death_formatted || "Present"})
+
+   div(style="margin-top:20px;margin-left:20px;")
+      h4 Books
+
+      dl
+      each book in books
+         dt
+            a(href=book.url) #{book.title}
+         dd #{book.summary}
+      else
+         p This author does not have any books
