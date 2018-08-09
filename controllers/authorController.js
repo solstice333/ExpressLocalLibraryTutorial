@@ -3,7 +3,6 @@ const Book = require('../models/book');
 const async = require('async');
 const createError = require('http-errors');
 const { body, validationResult} = require('express-validator/check');
-const { sanitizeBody } = require('express-validator/filter');
 
 // display list of all Authors
 exports.authorList = function(req, res, next) {
