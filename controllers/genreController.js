@@ -63,19 +63,18 @@ exports.genreCreatePost = [
             genre: newGenre,
             errors: errors.array()
          });
-         return;
       }
       else {
          Genre
             .findOne({ name: req.body.name })
             .then(genre => {
-               if (genre) res.redirect(genre.url)
+               if (genre) return genre
                else {
                   newGenre.save()
-                     .then(() => res.redirect(newGenre.url))
-                     .catch(err => next(err));
+                  return newGenre;
                }
             })
+            .then(genre => res.redirect(genre.url))
             .catch(err => next(err));
       }
    }
