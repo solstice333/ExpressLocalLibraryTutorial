@@ -71,9 +71,10 @@ exports.authorCreatePost = [
       .optional({ checkFalsy: true }).isISO8601().isBefore().withMessage(
          "date of death must be equal to or before current date")
       .custom((date_of_death, { req }) => {
-         let dob = req.body.date_of_birth;
-         if (dob) return new Date(date_of_death) >= new Date(dob)
-         return true;
+         let dob = req.body.date_of_birth ? 
+            new Date(req.body.date_of_birth) : null;
+         let dod = new Date(date_of_death);
+         return dob ? dod >= dob : true;
       })
       .withMessage("date of death must be equal to or after date of birth")
       .toDate(),
