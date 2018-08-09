@@ -53,22 +53,34 @@ exports.authorCreateGet = function(req, res) {
 
 // handle Author create on POST
 exports.authorCreatePost = [
-   body('first_name', "first name required")
-      .trim().isLength({ min: 1 }).escape(),
-   body('last_name', "last name required")
-      .trim().isLength({ min: 1 }).escape(),
+   body('first_name')
+      .trim().isLength({ min: 1 }).withMessage("first name required")
+      .isAlphanumeric().withMessage(
+         "first name must only have alphanumeric characters")
+      .escape(),
+   body('last_name')
+      .trim().isLength({ min: 1 }).withMessage("last name required")
+      .isAlphanumeric().withMessage(
+         "last name must only have alphanumeric characters")
+      .escape(),
    body('date_of_birth')
-      .optional({ checkFalsy: true }).isBefore().withMessage(
-         "date of birth must be equal to or before current date"),
+      .optional({ checkFalsy: true }).isISO8601().isBefore().withMessage(
+         "date of birth must be equal to or before current date")
+      .toDate(),
    body('date_of_death')
-      .optional({ checkFalsy: true }).isBefore().withMessage(
+      .optional({ checkFalsy: true }).isISO8601().isBefore().withMessage(
          "date of death must be equal to or before current date")
-      .custom((date_of_death, { req }) => 
-         new Date(date_of_death) >= new Date(req.body.date_of_birth)
-      )
-      .withMessage("date of death must be equal to or after date of birth"),
+      .custom((date_of_death, { req }) => {
+         let dob = req.body.date_of_birth;
+         if (dob) return new Date(date_of_death) >= new Date(dob)
+         return true;
+      })
+      .withMessage("date of death must be equal to or after date of birth")
+      .toDate(),
    function(req, res, next) {
       let errors = validationResult(req);
+
+      console.log(req.body);
 
       let newAuthor = new Author({
          first_name: req.body.first_name,
@@ -85,17 +97,8 @@ exports.authorCreatePost = [
          });
       }
       else {
-         Author.findOne({ 
-            first_name: newAuthor.first_name, 
-            family_name: newAuthor.family_name })
-            .then(author => {
-               if (author) return author
-               else {
-                  newAuthor.save();
-                  return newAuthor;
-               }
-            })
-            .then(author => res.redirect(author.url))
+         newAuthor.save()
+            .then(() => res.redirect(newAuthor.url))
             .catch(err => next(err));
       }
    }
