@@ -80,8 +80,6 @@ exports.authorCreatePost = [
    function(req, res, next) {
       let errors = validationResult(req);
 
-      console.log(req.body);
-
       let newAuthor = new Author({
          first_name: req.body.first_name,
          family_name: req.body.last_name,
