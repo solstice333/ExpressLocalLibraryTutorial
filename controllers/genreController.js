@@ -50,12 +50,10 @@ exports.genreCreateGet = function(req, res) {
 
 // handle Genre create on POST
 exports.genreCreatePost = [
-   body('name', 'Genre name required').trim().isLength({ min: 1 }),
-   sanitizeBody('name').trim().escape(),
+   body('name', 'Genre name required').trim().isLength({ min: 1 }).escape(),
    (req, res, next) => {
       const errors = validationResult(req);
 
-      console.log(`"${req.body.name}"`);
       let newGenre = new Genre({ name: req.body.name });
 
       if (!errors.isEmpty()) {

@@ -11,7 +11,7 @@ block content
 
    if errors
       p
-         dl
+         ul.list-unstyled
             for error in errors
                div.alert.alert-danger
-                  dt #{error.msg}
+                  li #{error.msg}
