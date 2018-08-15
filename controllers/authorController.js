@@ -4,6 +4,23 @@ const async = require('async');
 const createError = require('http-errors');
 const { body, validationResult} = require('express-validator/check');
 
+function adjustDateWithTZOffset(date, tzoffset) {
+   let pad = num => num < 10 ? '0' + num : num;
+   let sign = tzoffset >= 0 ? '-' : '+';
+   let hours = Math.floor(tzoffset/60);
+   let mins = Math.floor(tzoffset%60);
+   let iso = date.toISOString()
+      .replace(/Z/, `${sign}${pad(hours)}:${pad(mins)}`);
+   return new Date(iso);
+}
+
+function toTZOffsettedDate(date_str, { req }) {
+   if (!date_str) return date_str;
+   let tzoffset = parseInt(req.body.tzoffset)
+   let date = new Date(date_str);
+   return adjustDateWithTZOffset(date, tzoffset).toISOString();
+}
+
 // display list of all Authors
 exports.authorList = function(req, res, next) {
    Author.find()
@@ -63,16 +80,18 @@ exports.authorCreatePost = [
          "last name must only have alphanumeric characters")
       .escape(),
    body('date_of_birth')
-      .optional({ checkFalsy: true }).isISO8601().isBefore().withMessage(
+      .optional({ checkFalsy: true }).isISO8601()
+      .customSanitizer(toTZOffsettedDate)
+      .isBefore().withMessage(
          "date of birth must be equal to or before current date")
       .toDate(),
    body('date_of_death')
-      .optional({ checkFalsy: true }).isISO8601().isBefore().withMessage(
+      .optional({ checkFalsy: true }).isISO8601()
+      .customSanitizer(toTZOffsettedDate)
+      .isBefore().withMessage(
          "date of death must be equal to or before current date")
-      .custom((date_of_death, { req }) => {
-         let dob = req.body.date_of_birth ? 
-            new Date(req.body.date_of_birth) : null;
-         let dod = new Date(date_of_death);
+      .custom((dod, { req }) => {
+         let dob = req.body.date_of_birth || null; 
          return dob ? dod >= dob : true;
       })
       .withMessage("date of death must be equal to or after date of birth")

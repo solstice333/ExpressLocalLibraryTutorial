@@ -22,7 +22,7 @@ AuthorSchema
    .get(
       function() { 
          return this.date_of_birth ? 
-            moment(this.date_of_birth).format('MMMM Do, YYYY') : ''
+            moment(this.date_of_birth).utc().format('MMMM Do, YYYY') : ''
       }
    );
 
@@ -31,7 +31,7 @@ AuthorSchema
    .get(
       function() { 
          return this.date_of_death ? 
-            moment(this.date_of_death).format('MMMM Do, YYYY') : ''
+            moment(this.date_of_death).utc().format('MMMM Do, YYYY') : ''
       }
    );
 
