@@ -1,0 +1,21 @@
+extends layout
+
+block content
+   h1 #{title}
+
+   form(method='POST', action='')
+      div.form-group
+         label(for='author') Select an author
+         select#author.form-control.custom-select(name='author', multiple)
+            each author in authors
+               option(value=author.name) #{author.name}
+
+      div.form-group
+         label Select genres
+         each genre in genres
+            div.custom-control.custom-checkbox
+               - let genreName = 'Genre' + genre.camelCaseName;
+               input.custom-control-input(type='checkbox', name='genre', value=genre.name, id=genreName)
+               label.custom-control-label(for=genreName) #{genre.name}
+
+      button.btn.btn-primary(type="submit") Submit 
