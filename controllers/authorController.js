@@ -64,7 +64,7 @@ exports.authorDetail = function(req, res, next) {
 
 // display Author create form on GET
 exports.authorCreateGet = function(req, res) {
-   res.render('authorCreate', { title: 'Create Author'});
+   res.render('authorForm', { title: 'Create Author'});
 };
 
 // handle Author create on POST
@@ -107,7 +107,7 @@ exports.authorCreatePost = [
       });
 
       if (!errors.isEmpty()) {
-         res.render('authorCreate', {
+         res.render('authorForm', {
             title: 'Create Author',
             author: newAuthor,
             errors: errors.array()
