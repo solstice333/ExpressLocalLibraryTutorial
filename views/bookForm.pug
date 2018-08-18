@@ -5,17 +5,36 @@ block content
 
    form(method='POST', action='')
       div.form-group
-         label(for='author') Select an author
-         select#author.form-control.custom-select(name='author', multiple)
-            each author in authors
-               option(value=author.name) #{author.name}
+         label(for='title') Title:
+         input#title.form-control(type='text', name='title', required=true, placeholder='Name of book', value=(book === undefined ? '' : book.title))
 
       div.form-group
-         label Select genres
-         each genre in genres
-            div.custom-control.custom-checkbox
-               - let genreName = 'Genre' + genre.camelCaseName;
-               input.custom-control-input(type='checkbox', name='genre', value=genre.name, id=genreName)
-               label.custom-control-label(for=genreName) #{genre.name}
+         label(for='author') Author
+         select#author.form-control.custom-select(name='authorId', required='true', multiple)
+            each author in authors
+               if book
+                  option(value=author._id, selected=author._id.toString() === book.author.toString()) #{author.name}
+               else
+                  option(value=author._id) #{author.name}
+
+      div.form-group
+         label(for='summary') Summary:
+         textarea#summary.form-control(rows='3', placeholder='Summary', name='summary', required='true')
+            if book !== undefined
+               | #{book.summary}
+
+      div.form-group
+         label(for='isbn') ISBN:
+         input#isbn.form-control(type='text', placeholder='ISBN13', name='isbn', value=(book === undefined ? '' : book.isbn), required='true')
+
+      div.form-group
+         label Genre:
+         div
+            each genre in genres
+               div.custom-control.custom-checkbox.custom-control-inline
+                  input.custom-control-input(type='checkbox', name='genre', value=genre._id, id=genre._id, checked=genre.checked)
+                  label.custom-control-label(for=genre._id) #{genre.name}
 
       button.btn.btn-primary(type="submit") Submit 
+
+      include validation_errors.pug

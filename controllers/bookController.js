@@ -83,10 +83,74 @@ exports.bookCreateGet = function(req, res, next) {
 };
 
 // handle book create on POST
-exports.bookCreatePost = function(req, res, next) {
-   console.log(req.body);
-   res.send('NOT IMPLEMENTED: Book create POST');
-};
+exports.bookCreatePost = [
+   (req, res, next) => {
+      if (!(req.body.genre instanceof Array)) {
+         if (req.body.genre === undefined)
+            req.body.genre = []
+         else
+            req.body.genre = [req.body.genre];
+      }
+      next();
+   },
+   body('genre.*').trim().escape(),
+   body('title', 'Title must not be empty.')
+      .trim().escape().isLength({ min: 1 }),
+   body('authorId', 'Author must not be empty.')
+      .trim().escape().isLength({ min: 1 }),
+   body('summary', 'Summary must not be empty.')
+      .trim().escape().isLength({ min: 1 }),
+   body('isbn', 'ISBN must not be empty.')
+      .trim().escape().isLength({ min: 1 }),
+   (req, res, next) => {
+      let errors = validationResult(req);
+
+      let newBook = new Book({
+         title: req.body.title,
+         author: req.body.authorId,
+         summary: req.body.summary,
+         isbn: req.body.isbn,
+         genre: req.body.genre
+      });
+
+      console.log(req.body);
+      console.log(newBook);
+
+      if (!errors.isEmpty()) {
+         async.parallel(
+            {
+               authors: cb => Author.find(cb),
+               genres: cb => Genre.find(cb)
+            },
+            (err, results) => {
+               if (err) next(err);
+
+               for (let genre of results.genres) {
+                  if (newBook.genre.find(selectedGenre =>
+                     genre._id.toString() === selectedGenre._id.toString()))
+                     genre.checked = 'true';
+               }
+
+               res.render(
+                  'bookForm', 
+                  {
+                     title: 'Create Book',
+                     authors: results.authors,
+                     genres: results.genres,
+                     book: newBook ,
+                     errors: errors.array()
+                  }
+               );
+            }
+         )
+      }
+      else {
+         newBook.save()
+            .then(() => res.redirect(newBook.url))
+            .catch(err => next(err));
+      }
+   }
+]
 
 // display book delete form on GET
 exports.bookDeleteGet = function(req, res) {
