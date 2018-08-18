@@ -10,7 +10,7 @@ function adjustDateWithTZOffset(date, tzoffset) {
 
 function toTZOffsettedDate(date_str, { req }) {
    if (!date_str) return date_str;
-   let tzoffset = parseInt(req.body.tzoffset)
+   let tzoffset = parseInt(req.body.tzoffset);
    let date = new Date(date_str);
    return adjustDateWithTZOffset(date, tzoffset).toISOString();
 }

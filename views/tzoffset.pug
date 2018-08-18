@@ -1,0 +1,7 @@
+input#tzo.form-control(type='hidden', name='tzoffset')
+script
+   | window.onload = () => {
+   |    let tzo = document.getElementById("tzo");
+   |    tzo.value = new Date().getTimezoneOffset();
+   | }
+

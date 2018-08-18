@@ -18,6 +18,12 @@ BookInstanceSchema
 
 BookInstanceSchema
    .virtual('due_back_formatted')
-   .get(function() { return moment(this.due_back).format('MMMM Do, YYYY') });
+   .get(function() { return this.due_back ? 
+      moment(this.due_back).format('MMMM Do, YYYY') : '' });
+
+BookInstanceSchema
+   .virtual('due_back_iso8601')
+   .get(function() { return this.due_back ?
+      moment(this.due_back).utc().format('YYYY-MM-DD') : '' });
 
 module.exports = mongoose.model('BookInstance', BookInstanceSchema);

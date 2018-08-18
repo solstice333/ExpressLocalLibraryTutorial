@@ -1,0 +1,36 @@
+extends layout
+
+block content
+   h1= title
+
+   form(method='POST', action='')
+      div.form-group
+         label(for='books') Book:
+         select#books.form-control.custom-select(name='book', required=true, multiple)
+            each book in books
+               if bookinstance
+                  option(value=book._id, selected=book._id.toString() === bookinstance.book.toString()) #{book.title}
+               else
+                  option(value=book._id) #{book.title}
+
+      div.form-group
+         label(for='imprint') Imprint:
+         input#imprint.form-control(type='text', placeholder='Publisher and date information', name='imprint', required=true, value=bookinstance === undefined ? '' : bookinstance.imprint)
+
+      div.form-group
+         label(for='dueBack') Date when book available
+         input#dueBack.form-control(type='date', name='dueBack', value=bookinstance === undefined ? '' : bookinstance.due_back_iso8601)   
+
+      div.form-group
+         label(for='status') Status:
+         select#status.form-control.custom-select(name='status', required=true, multiple)
+            option(value='Maintenance') Maintenance
+            option(value='Available') Available
+            option(value='Loaned') Loaned
+            option(value='Reserved') Reserved
+
+      include tzoffset.pug
+
+      button.btn.btn-primary(type='submit') Submit
+
+   include validation_errors.pug
