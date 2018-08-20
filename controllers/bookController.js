@@ -99,7 +99,7 @@ exports.bookCreatePost = [
    body('authorId', 'Author must not be empty.')
       .trim().escape().isLength({ min: 1 }),
    body('summary', 'Summary must not be empty.')
-      .trim().escape().isLength({ min: 1 }),
+      .trim().isLength({ min: 1 }),
    body('isbn', 'ISBN must not be empty.')
       .trim().escape().isLength({ min: 1 }),
    (req, res, next) => {
