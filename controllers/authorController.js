@@ -4,6 +4,9 @@ const async = require('async');
 const createError = require('http-errors');
 const { body, validationResult} = require('express-validator/check');
 const toTZOffsettedDate = require('./toTZOffsettedDate');
+const mongoose = require('mongoose');
+const ObjectId = mongoose.Types.ObjectId;
+const assert = require('assert').strict;
 
 
 // display list of all Authors
@@ -107,13 +110,61 @@ exports.authorCreatePost = [
 ]
 
 // display Author delete form on GET
-exports.authorDeleteGet = function(req, res) {
-   res.send('NOT IMPLEMENTED: Author delete GET');
+exports.authorDeleteGet = function(req, res, next) {
+   async.parallel(
+      {
+         author: cb => Author.findById(req.params.id, cb),
+         authorsBooks: cb => Book.find({ author: req.params.id }, cb)
+      },
+      (err, results) => {
+         if (err) next(err);
+         if (!results.author) res.redirect('/catalog/authors');
+         else res.render(
+            'authorDelete',
+            {
+               title: 'Delete Author',
+               author: results.author,
+               authorsBooks: results.authorsBooks
+            }
+         );
+      }
+   );
 };
 
 // handle Author delete on POST
-exports.authorDeletePost = function(req, res) {
-   res.send('NOT IMPLEMENTED: Author delete POST');
+exports.authorDeletePost = function(req, res, next) {
+
+   // can use the hidden `authorId` field or req.params.id
+   assert(req.params.id === req.body.authorId);
+
+   async.parallel(
+      {
+         author: cb => Author.findById(req.params.id, cb),
+         authorsBooks: cb => Book.find({ author: req.params.id }, cb)
+      },
+      (err, results) => {
+         if (results.authorsBooks.length) {
+            res.render(
+               'authorDelete',
+               {
+                  title: 'Delete Author',
+                  author: results.author,
+                  authorsBooks: results.authorsBooks,
+                  errors: [
+                     { 
+                        msg: "Must delete author's books " +
+                           "before attempting to delete author" 
+                     }
+                  ]
+               }
+            );
+         }
+         else   // this handles the null `author` case too
+            Author.findByIdAndDelete(req.params.id)
+               .then(() => res.redirect('/catalog/authors'))
+               .catch(err => next(err));
+      }
+   );
 };
 
 // handle Author update form on GET
