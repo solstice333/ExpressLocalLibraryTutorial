@@ -29,8 +29,8 @@ block content
             option(value='Loaned') Loaned
             option(value='Reserved') Reserved
 
-      include tzoffset.pug
+      input#tzo.form-control(type='hidden', name='tzoffset', value=new Date().getTimezoneOffset())
 
       button.btn.btn-primary(type='submit') Submit
 
-   include validation_errors.pug
+   include validationErrors.pug

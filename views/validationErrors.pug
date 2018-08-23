@@ -1,6 +1,6 @@
 if errors
    p
       ul.list-unstyled
-         for error in errors
+         each error in errors
             div.alert.alert-danger
                li #{error.msg}
