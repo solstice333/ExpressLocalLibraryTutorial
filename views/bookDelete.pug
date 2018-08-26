@@ -3,6 +3,8 @@ extends layout
 block content
    h1 #{title}: #{book.title}
 
+   include dumpBook.pug
+
    if bookinstances.length
       p.alert.alert-warning(role='alert') #[strong Delete the following copies before attempting to delete this book.]
 
