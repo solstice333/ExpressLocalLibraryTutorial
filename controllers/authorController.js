@@ -22,7 +22,7 @@ exports.authorList = function(req, res, next) {
             }
          )
       )
-      .catch(err => next(err));
+      .catch(next);
 };
 
 // display detail page for a specific Author
@@ -104,7 +104,7 @@ exports.authorCreatePost = [
       else {
          newAuthor.save()
             .then(() => res.redirect(newAuthor.url))
-            .catch(err => next(err));
+            .catch(next);
       }
    }
 ]
@@ -162,7 +162,7 @@ exports.authorDeletePost = function(req, res, next) {
          else   // this handles the null `author` case too
             Author.findByIdAndDelete(req.params.id)
                .then(() => res.redirect('/catalog/authors'))
-               .catch(err => next(err));
+               .catch(next);
       }
    );
 };

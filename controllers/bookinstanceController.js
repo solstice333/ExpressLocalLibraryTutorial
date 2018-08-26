@@ -18,7 +18,7 @@ exports.bookinstanceList = function(req, res, next) {
             }
          )
       })
-      .catch(err => next(err));
+      .catch(next);
 };
 
 // display detail page for a specific BookInstance
@@ -36,7 +36,7 @@ exports.bookinstanceDetail = function(req, res, next) {
             }
          )
       })
-      .catch(err => next(err));
+      .catch(next);
 };
 
 // display BookInstance create form on GET
@@ -49,7 +49,7 @@ exports.bookinstanceCreateGet = function(req, res, next) {
             books: books
          }
       ))
-      .catch(err => next(err));
+      .catch(next);
 };
 
 // handle BookInstance create on POST
@@ -85,12 +85,12 @@ exports.bookinstanceCreatePost = [
                   errors: errors.array()
                }
             ))
-            .catch(err => next(err));
+            .catch(next);
       }
       else {
          newBookinstance.save()
             .then(() => res.redirect(newBookinstance.url))
-            .catch(err => next(err));
+            .catch(next);
       }
    }
 ];

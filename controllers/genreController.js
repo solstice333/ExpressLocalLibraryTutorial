@@ -17,7 +17,7 @@ exports.genreList = function(req, res, next) {
             }
          )
       )
-      .catch(err => next(err));
+      .catch(next);
 };
 
 // display detail page for a specific Genre
@@ -74,7 +74,7 @@ exports.genreCreatePost = [
                }
             })
             .then(genre => res.redirect(genre.url))
-            .catch(err => next(err));
+            .catch(next);
       }
    }
 ];

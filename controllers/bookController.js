@@ -5,6 +5,7 @@ const BookInstance = require('../models/bookinstance');
 const async = require('async');
 const createError = require('http-errors');
 const { body, validationResult } = require('express-validator/check');
+const assert = require('assert').strict;
 
 exports.index = function(req, res) {
    async.parallel({
@@ -32,7 +33,7 @@ exports.bookList = function(req, res, next) {
             (a, b) => a.author.family_name > b.author.family_name);
          res.render('bookList', { title: 'Book List', bookList: books })
       })
-      .catch(err => next(err));
+      .catch(next);
 };
 
 // display detail page for a specific book
@@ -147,19 +148,66 @@ exports.bookCreatePost = [
       else {
          newBook.save()
             .then(() => res.redirect(newBook.url))
-            .catch(err => next(err));
+            .catch(next);
       }
    }
 ]
 
 // display book delete form on GET
-exports.bookDeleteGet = function(req, res) {
-   res.send('NOT IMPLEMENTED: Book delete GET');
+exports.bookDeleteGet = function(req, res, next) {
+   async.parallel(
+      {
+         book: cb => Book.findById(req.params.id, cb)
+            .populate('author').populate('genre'),
+         bookinstances: cb => BookInstance.find({ book: req.params.id }, cb)
+      },
+      (err, results) => {
+         if (err) next(err);
+         if (!results.book) res.redirect('/catalog/books');
+         res.render(
+            'bookDelete',
+            {
+               title: 'Delete Book',
+               book: results.book,
+               bookinstances: results.bookinstances
+            }
+         );
+      }
+   );
 };
 
 // display book delete form on POST
-exports.bookDeletePost = function(req, res) {
-   res.send('NOT IMPLEMENTED: Book delete POST');
+exports.bookDeletePost = function(req, res, next) {
+   assert(req.params.id === req.body.bookId);
+
+   async.parallel(
+      {
+         book: cb => Book.findById(req.params.id, cb),
+         bookinstances: cb => BookInstance.find({ book: req.params.id }, cb)
+      },
+      (err, results) => {
+         if (results.bookinstances.length) {
+            res.render(
+               'bookDelete',
+               {
+                  title: 'Delete Book',
+                  book: results.book,
+                  bookinstances: results.bookinstances,
+                  errors: [
+                     { 
+                        msg: "Must delete book's copies " +
+                           "before attempting to delete book" 
+                     }
+                  ]
+               }
+            );
+         }
+         else   // this handles the null `book` case too
+            Book.findByIdAndDelete(req.params.id)
+               .then(() => res.redirect('/catalog/books'))
+               .catch(next);
+      }
+   );
 };
 
 // display book update form on GET

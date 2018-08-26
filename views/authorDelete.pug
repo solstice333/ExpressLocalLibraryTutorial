@@ -5,7 +5,7 @@ block content
    p #{author.lifespan}
 
    if authorsBooks.length
-      p.alert.alert-warning #[strong Delete the following books before attempting to delete this author.]
+      p.alert.alert-warning(role='alert') #[strong Delete the following books before attempting to delete this author.]
 
       div(style='margin-left:20px;margin-top:20px')
          h4 Books
@@ -17,7 +17,7 @@ block content
                dd #{book.summary}
 
    else
-      p.alert.alert-danger(role="alert") #[strong Do you really want to delete this Author?]
+      p.alert.alert-danger(role='alert') #[strong Do you really want to delete this Author?]
 
       form(method='POST', action='')
          div.form-group

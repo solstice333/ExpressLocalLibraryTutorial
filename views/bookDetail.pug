@@ -17,22 +17,10 @@ block content
       h4 Copies
 
       each bookInstance in bookInstances
-         hr
-
-         if bookInstance.status === 'Available'
-            p.text-success #{bookInstance.status}
-         else if bookInstance.status === 'Maintenance'
-            p.text-danger #{bookInstance.status}
-         else
-            p.text-warning #{bookInstance.status}
-
-         p #[strong Imprint:] #{bookInstance.imprint}
-
-         if bookInstance.status !== 'Available'
-            p #[strong Due back:] #{bookInstance.due_back_formatted}
-
-         p #[strong Id:]&nbsp;
-            a(href=bookInstance.url) #{bookInstance._id}
+         include dumpBookinstance.pug
       else
          p There are no copies of this book in the library
 
+   br
+   br
+   a.btn.btn-warning(href=`${book.url}/delete`) Delete
