@@ -3,13 +3,13 @@ const BookInstance = require('../models/bookinstance');
 const createError = require('http-errors');
 const { body, validationResult } = require('express-validator/check');
 const toTZOffsettedDate = require('./toTZOffsettedDate');
+const assert = require('assert').strict;
 
 // display list of all bookinstances
 exports.bookinstanceList = function(req, res, next) {
    BookInstance.find()
       .populate('book')
       .then(bookinstances => {
-         console.log(bookinstances);
          res.render(
             'bookinstanceList',
             {
@@ -96,13 +96,29 @@ exports.bookinstanceCreatePost = [
 ];
 
 // display BookInstance delete form on GET
-exports.bookinstanceDeleteGet = function(req, res) {
-   res.send('NOT IMPLEMENTED: BookInstance delete GET');
+exports.bookinstanceDeleteGet = function(req, res, next) {
+   BookInstance.findById(req.params.id)
+      .populate('book')
+      .then(inst => {
+         if (!inst) res.redirect('/catalog/bookinstances');
+         res.render(
+            'bookinstanceDelete', 
+            { 
+               title: 'Delete Copy',
+               inst: inst
+            }
+         );
+      })
+      .catch(next);
 };
 
 // handle BookInstance delete on POST
-exports.bookinstanceDeletePost = function(req, res) {
-   res.send('NOT IMPLEMENTED: BookInstance delete POST');
+exports.bookinstanceDeletePost = function(req, res, next) {
+   assert(req.params.id === req.body.bookinstanceId);
+
+   BookInstance.findByIdAndDelete(req.params.id)
+      .then(() => res.redirect('/catalog/bookinstances'))
+      .catch(next);
 };
 
 // display BookInstance update form on GET

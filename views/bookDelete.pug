@@ -12,7 +12,7 @@ block content
          h4 Copies
 
          each bookInstance in bookinstances
-            include dumpBookinstance.pug
+            include dumpBookinstanceListItem.pug
    else
       p.alert.alert-danger(role='alert') #[strong Do you really want to delete this Book?]
 

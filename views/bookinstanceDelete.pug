@@ -1,0 +1,14 @@
+extends layout
+
+block content
+   include dumpBookinstanceDetail.pug
+   
+   p.alert.alert-danger(role='alert') #[strong Do you really want to delete this copy?]
+
+      form(method='POST', action='')
+         div.form-group
+            input#bookinstanceId.form-control(type='hidden', name='bookinstanceId', required='true', value=inst._id)
+
+         button.btn.btn-danger(type='submit') Delete
+
+   include validationErrors.pug

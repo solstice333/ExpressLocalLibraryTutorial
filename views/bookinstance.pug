@@ -1,20 +1,8 @@
 extends layout
 
 block content
-   h1 ID: #{inst._id}
-   
-   p #[strong Title:] 
-      a(href=inst.book.url) #{inst.book.title}
-   p #[strong Imprint:] #{inst.imprint}
-   p #[strong Status:] 
-      if /available/i.test(inst.status)
-         span.text-success #{inst.status}
-      else if /maintenance/i.test(inst.status)
-         span.text-danger #{inst.status}
-      else
-         span.text-warning #{inst.status}
+   include dumpBookinstanceDetail.pug
 
-   if !/available/i.test(inst.status)
-      p #[strong Due back:] #{inst.due_back_formatted}
-
-   
+   br
+   br
+   a.btn.btn-warning(href=`${inst.url}/delete`) Delete
