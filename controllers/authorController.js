@@ -143,6 +143,7 @@ exports.authorDeletePost = function(req, res, next) {
          authorsBooks: cb => Book.find({ author: req.params.id }, cb)
       },
       (err, results) => {
+         if (err) next(err);
          if (results.authorsBooks.length) {
             res.render(
                'authorDelete',

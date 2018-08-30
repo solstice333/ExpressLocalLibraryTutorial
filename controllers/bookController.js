@@ -186,6 +186,7 @@ exports.bookDeletePost = function(req, res, next) {
          bookinstances: cb => BookInstance.find({ book: req.params.id }, cb)
       },
       (err, results) => {
+         if (err) next(err);
          if (results.bookinstances.length) {
             res.render(
                'bookDelete',

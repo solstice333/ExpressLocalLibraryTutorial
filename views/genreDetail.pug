@@ -9,9 +9,12 @@ block content
 
       dl
          each book in genreBooks
-            dt
-               a(href=book.url) #{book.title}
-            dd #{book.summary}
+            include dumpBookListItem.pug
          else
             p This genre has no books
+
+   br
+   br
+   a.btn.btn-warning(href=`${genre.url}/delete`) Delete
+
 

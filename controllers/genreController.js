@@ -3,6 +3,7 @@ const Book = require('../models/book');
 const async = require('async');
 const createError = require('http-errors');
 const { body, validationResult } = require('express-validator/check');
+const assert = require('assert').strict;
 
 // display list of all Genre
 exports.genreList = function(req, res, next) {
@@ -80,13 +81,58 @@ exports.genreCreatePost = [
 ];
 
 // display Genre delete form on GET
-exports.genreDeleteGet = function(req, res) {
-   res.send('NOT IMPLEMENTED: Genre delete GET');
+exports.genreDeleteGet = function(req, res, next) {
+   async.parallel(
+      {
+         genre: cb => Genre.findById(req.params.id, cb),
+         genreBooks: cb => Book.find({ genre: req.params.id }, cb)
+      },
+      (err, results) => {
+         if (err) next(err);
+         if (!results.genre) res.redirect('/catalog/genres');
+
+         res.render(
+            'genreDelete',
+            {
+               genre: results.genre,
+               genreBooks: results.genreBooks
+            }
+         ); 
+      }
+   );
 };
 
 // handle Genre delete on POST
-exports.genreDeletePost = function(req, res) {
-   res.send('NOT IMPLEMENTED: Genre delete POST');
+exports.genreDeletePost = function(req, res, next) {
+   async.parallel(
+      {
+         genre: cb => Genre.findById(req.params.id, cb),
+         genreBooks: cb => Book.find({ genre: req.params.id }, cb)
+      },
+      (err, results) => {
+         if (err) next(err);
+         if (results.genreBooks.length) {
+            res.render(
+               'genreDelete',
+               {
+                  genre: results.genre,
+                  genreBooks: results.genreBooks,
+                  errors: [
+                     { 
+                        msg: "Must delete books in this genre before" +
+                           " attempting to delete this genre"
+                     }
+                  ]
+               }
+            ); 
+         }
+         else {
+            Genre.findByIdAndDelete(req.params.id)
+               .then(() => res.redirect('/catalog/genres'))
+               .catch(next);
+         }
+      }
+   );
 };
 
 // display Genre update form on GET
