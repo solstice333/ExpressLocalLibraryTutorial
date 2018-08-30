@@ -212,8 +212,32 @@ exports.bookDeletePost = function(req, res, next) {
 };
 
 // display book update form on GET
-exports.bookUpdateGet = function(req, res) {
-   res.send('NOT IMPLEMENTED: Book update GET');
+exports.bookUpdateGet = function(req, res, next) {
+   async.parallel(
+      {
+         book: cb => Book.findById(req.params.id).populate('genre').exec(cb),
+         authors: cb => Author.find(cb),
+         genres: cb => Genre.find(cb)
+      },
+      (err, results) => {
+         if (err) next(err);
+         if (!results.book) next(createError(404, 'Book not found'));
+         for (let genre of results.genres) {
+            if (results.book.genre.find(
+               bookGenre => genre.name === bookGenre.name))
+               genre.checked = true;
+         }
+         res.render(
+            'bookForm',
+            {
+               title: 'Update Book',
+               book: results.book,
+               authors: results.authors,
+               genres: results.genres
+            }
+         );
+      }
+   );
 };
 
 // display book update form on POST
