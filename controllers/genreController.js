@@ -94,6 +94,7 @@ exports.genreDeleteGet = function(req, res, next) {
          res.render(
             'genreDelete',
             {
+               title: 'Delete Genre',
                genre: results.genre,
                genreBooks: results.genreBooks
             }
@@ -115,6 +116,7 @@ exports.genreDeletePost = function(req, res, next) {
             res.render(
                'genreDelete',
                {
+                  title: 'Delete Genre',
                   genre: results.genre,
                   genreBooks: results.genreBooks,
                   errors: [

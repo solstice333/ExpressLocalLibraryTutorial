@@ -1,7 +1,7 @@
 extends layout
 
 block content
-   h1 Genre: #{genre.name}
+   h1 #{title}: #{genre.name}
 
    if genreBooks.length
       p.alert.alert-warning(role='alert') #[strong Delete the following books before attempting to delete this genre]
