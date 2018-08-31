@@ -169,8 +169,19 @@ exports.authorDeletePost = function(req, res, next) {
 };
 
 // handle Author update form on GET
-exports.authorUpdateGet = function(req, res) {
-   res.send('NOT IMPLEMENTED: Author update GET');
+exports.authorUpdateGet = function(req, res, next) {
+   Author.findById(req.params.id)
+      .then(author => {
+         if (!author) next(createError(404, 'Author not found'));
+         res.render(
+            'authorForm',
+            {
+               title: 'Update Author',
+               author: author
+            }
+         );
+      })
+      .catch(next);
 };
 
 // handle Author update on POST

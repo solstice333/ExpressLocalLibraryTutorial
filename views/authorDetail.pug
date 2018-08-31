@@ -17,4 +17,7 @@ block content
 
    br
    br
-   a.btn.btn-warning(href=`${author.url}/delete`) Delete 
+   div.btn-group(role='group', aria-label='delete and update controls')
+      a.btn.btn-warning.mr-2(href=`${author.url}/delete`) Delete
+      a.btn.btn-warning.mr-2(href=`${author.url}/update`) Update
+
