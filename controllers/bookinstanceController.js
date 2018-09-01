@@ -1,6 +1,7 @@
 const Book = require('../models/book');
 const BookInstance = require('../models/bookinstance');
 const createError = require('http-errors');
+const async = require('async');
 const { body, validationResult } = require('express-validator/check');
 const toTZOffsettedDate = require('./toTZOffsettedDate');
 const assert = require('assert').strict;
@@ -29,7 +30,7 @@ exports.bookinstanceDetail = function(req, res, next) {
       .then(inst => {
          if (!inst) next(createError(404, "Book copy not found"));
          res.render(
-            'bookinstance',
+            'bookinstanceDetail',
             {
                title: 'Book Instance',
                inst: inst
@@ -122,8 +123,27 @@ exports.bookinstanceDeletePost = function(req, res, next) {
 };
 
 // display BookInstance update form on GET
-exports.bookinstanceUpdateGet = function(req, res) {
-   res.send('NOT IMPLEMENTED: BookInstance update GET');
+exports.bookinstanceUpdateGet = function(req, res, next) {
+   async.parallel(
+      {
+         books: cb => Book.find(cb),
+         bookinstance: cb => BookInstance.findById(req.params.id, cb)
+      },
+      (err, results) => {
+         if (err) next(err);
+         if (!results.bookinstance) 
+            next(createError(404, 'Bookinstance not found'));
+
+         res.render(
+            'bookinstanceForm',
+            {
+               title: 'Update Book',
+               books: results.books,
+               bookinstance: results.bookinstance
+            }
+         );
+      }
+   );
 };
 
 // handle BookInstance update on POST

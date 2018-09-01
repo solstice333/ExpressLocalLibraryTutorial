@@ -1,0 +1,10 @@
+extends layout
+
+block content
+   include dumpBookinstanceDetail.pug
+
+   br
+   br
+   div.btn-group(role='group', aria-label='delete and update controls')
+      a.btn.btn-warning.mr-2(href=`${inst.url}/delete`) Delete
+      a.btn.btn-warning.mr-2(href=`${inst.url}/update`) Update
