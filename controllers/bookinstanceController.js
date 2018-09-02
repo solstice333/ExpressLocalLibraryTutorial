@@ -65,6 +65,8 @@ exports.bookinstanceCreatePost = [
       .isAfter().withMessage('Date must be after current date or empty')
       .customSanitizer(toTZOffsettedDate)
       .toDate(),
+   body('status')
+      .trim().escape().isLength({ min: 1 }),
    (req, res, next) => {
       let errors = validationResult(req);
 
@@ -137,7 +139,7 @@ exports.bookinstanceUpdateGet = function(req, res, next) {
          res.render(
             'bookinstanceForm',
             {
-               title: 'Update Book',
+               title: 'Update Copy',
                books: results.books,
                bookinstance: results.bookinstance
             }
@@ -147,6 +149,47 @@ exports.bookinstanceUpdateGet = function(req, res, next) {
 };
 
 // handle BookInstance update on POST
-exports.bookinstanceUpdatePost = function(req, res) {
-   res.send('NOT IMPLEMENTED: BookInstance update POST');
-};
+exports.bookinstanceUpdatePost = [
+   body('book', 'Book must be specified') 
+      .trim().escape().isLength({ min: 1 }),
+   body('imprint', 'Imprint must be specified')
+      .trim().escape().isLength({ min: 1 }),
+   body('dueBack')
+      .optional({ checkFalsy: true })
+      .isISO8601().withMessage('Invalid date')
+      .isAfter().withMessage('Date must be after current date or empty')
+      .customSanitizer(toTZOffsettedDate)
+      .toDate(),
+   body('status')
+      .trim().escape().isLength({ min: 1 }),
+   (req, res, next) => {
+      let errors = validationResult(req);
+
+      let updatedBookinstance = new BookInstance({
+         _id: req.params.id,
+         book: req.body.book,
+         imprint: req.body.imprint,
+         status: req.body.status,
+         due_back: req.body.dueBack
+      });
+
+      if (!errors.isEmpty()) {
+         Book.find({}, 'title')
+            .then(books => res.render(
+               'bookinstanceForm', 
+               { 
+                  title: 'Update Copy',
+                  books: books,
+                  bookinstance: updatedBookinstance,
+                  errors: errors.array()
+               }
+            ))
+            .catch(next);
+      }
+      else {
+         BookInstance.findByIdAndUpdate(req.params.id, updatedBookinstance)
+            .then(() => res.redirect(updatedBookinstance.url))
+            .catch(next);
+      }
+   }
+];

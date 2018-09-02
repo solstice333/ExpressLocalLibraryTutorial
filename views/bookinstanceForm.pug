@@ -24,10 +24,10 @@ block content
       div.form-group
          label(for='status') Status:
          select#status.form-control.custom-select(name='status', required=true, multiple)
-            option(value='Maintenance') Maintenance
-            option(value='Available') Available
-            option(value='Loaned') Loaned
-            option(value='Reserved') Reserved
+            option(value='Maintenance', selected=bookinstance ? bookinstance.status === 'Maintenance' : false) Maintenance
+            option(value='Available', selected=bookinstance ? bookinstance.status === 'Available' : false) Available
+            option(value='Loaned', selected=bookinstance ? bookinstance.status === 'Loaned' : false) Loaned
+            option(value='Reserved', selected=bookinstance ? bookinstance.status === 'Reserved' : false) Reserved
 
       input#tzo.form-control(type='hidden', name='tzoffset', value=new Date().getTimezoneOffset())
 
