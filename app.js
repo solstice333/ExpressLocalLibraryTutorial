@@ -15,6 +15,8 @@ const catalogRouter = require('./routes/catalog');
 const compression = require('compression');
 const helmet = require('helmet');
 
+const { logBody } = require('./loggers/loggers');
+
 mongoose.connect(local_library_db, { useNewUrlParser: true })
    .catch(err => {
       console.error(`MongoDB connection error: ${err}`);
@@ -36,6 +38,7 @@ app.use(cookieParser());
 app.use(compression());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(logBody);
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/catalog', catalogRouter);
