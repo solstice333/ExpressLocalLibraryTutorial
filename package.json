@@ -1,6 +1,9 @@
 {
   "name": "express_locallibrary_tutorial",
   "version": "0.0.0",
+  "engines": {
+    "node": "10.10.0"
+  },
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
