@@ -1,16 +1,17 @@
-const winston = require('winston');
+const { createLogger, format, transports } = require('winston');
 
-const appLogger = winston.createLogger({
+
+const appLogger = createLogger({
    level: 'info',
-   format: winston.format.combine(
-      winston.format.label({ label: 'entry' }),
-      winston.format.timestamp(),
-      // winston.format.json()
-      winston.format.prettyPrint()
+   format: format.combine(
+      format.label({ label: 'entry' }),
+      format.timestamp(),
+      // format.json()
+      format.prettyPrint()
    ),
    transports: [ 
-      new winston.transports.Console(),
-      new winston.transports.File({ filename: 'logs/bodies.log'}) 
+      new transports.Console(),
+      new transports.File({ filename: 'logs/bodies.log'}) 
    ]
 });
 
