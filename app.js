@@ -1,7 +1,7 @@
 const createError = require('http-errors');
 const express = require('express');
 const mongoose = require('mongoose');
-const local_library_db = 'mongodb://127.0.0.1:27017/localLibrary';
+const localLibraryDb = 'mongodb://127.0.0.1:27017/localLibrary';
 const path = require('path');
 const favicon = require('serve-favicon');
 const logger = require('morgan');
@@ -17,7 +17,7 @@ const helmet = require('helmet');
 
 const { logBody } = require('./loggers/loggers');
 
-mongoose.connect(local_library_db, { useNewUrlParser: true })
+mongoose.connect(localLibraryDb, { useNewUrlParser: true })
    .catch(err => {
       console.error(`MongoDB connection error: ${err}`);
       process.exit(1);
