@@ -1,14 +1,11 @@
 const createError = require('http-errors');
 const express = require('express');
-const mongoose = require('mongoose');
 const path = require('path');
 const favicon = require('serve-favicon');
 const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const process = require('process');
-const localLibraryDb = 
-   process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/localLibrary';
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
@@ -17,12 +14,6 @@ const compression = require('compression');
 const helmet = require('helmet');
 
 const { logBody } = require('./loggers/loggers');
-
-mongoose.connect(localLibraryDb, { useNewUrlParser: true })
-   .catch(err => {
-      console.error(`MongoDB connection error: ${err}`);
-      process.exit(1);
-   });
 
 const app = express();
 
