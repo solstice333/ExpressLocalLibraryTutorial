@@ -64,11 +64,18 @@ function onListening() {
   let bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;
+
+  mongoose.connect(localLibraryDb, { useNewUrlParser: true })
+    .catch(err => {
+      console.error(`MongoDB connection error: ${err}`);
+      process.exit(1);
+    });
+
   debug('Listening on ' + bind);
 }
 
 /**
- * Even listener on 'close' event
+ * Event listener on 'close' event
  */
 function onClose() { mongoose.connection.close(); }
 
@@ -77,15 +84,6 @@ function onClose() { mongoose.connection.close(); }
  */
 let port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
-
-/**
- * Connect to the database
- */
-mongoose.connect(localLibraryDb, { useNewUrlParser: true })
-  .catch(err => {
-    console.error(`MongoDB connection error: ${err}`);
-    process.exit(1);
-  });
 
 /**
  * Create HTTP server.
@@ -99,5 +97,3 @@ server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
 server.on('close', onClose);
-
-module.exports = server;
