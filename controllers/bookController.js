@@ -48,16 +48,20 @@ exports.bookDetail = function(req, res, next) {
          bookInstances: cb => BookInstance.find({ book: req.params.id }, cb)
       },
       (err, results) => {
-         if (err) next(err);
-         if (!results.book) next(createError(404, 'Book not found'));   
-         res.render(
-            'bookDetail', 
-            { 
-               title: 'Title', 
-               book: results.book,
-               bookInstances: results.bookInstances
-            }
-         );
+         if (err) 
+            next(err);
+         else if (!results.book)
+            next(createError(404, 'Book not found'));
+         else {
+            res.render(
+               'bookDetail', 
+               { 
+                  title: 'Title', 
+                  book: results.book,
+                  bookInstances: results.bookInstances
+               }
+            );
+         }
       }
    );
 };
@@ -70,15 +74,18 @@ exports.bookCreateGet = function(req, res, next) {
          genres: cb => Genre.find(cb)
       },
       (err, results) => {
-         if (err) next(err);
-         res.render(
-            'bookForm',
-            {
-               title: 'Create Book',
-               authors: results.authors,
-               genres: results.genres
-            }
-         );
+         if (err) 
+            next(err);
+         else {
+            res.render(
+               'bookForm',
+               {
+                  title: 'Create Book',
+                  authors: results.authors,
+                  genres: results.genres
+               }
+            );
+         }
       }
    )
 };
@@ -119,24 +126,26 @@ exports.bookCreatePost = [
                genres: cb => Genre.find(cb)
             },
             (err, results) => {
-               if (err) next(err);
-
-               for (let genre of results.genres) {
-                  if (newBook.genre.find(selectedGenre =>
-                     genre._id.toString() === selectedGenre._id.toString()))
-                     genre.checked = 'true';
-               }
-
-               res.render(
-                  'bookForm', 
-                  {
-                     title: 'Create Book',
-                     authors: results.authors,
-                     genres: results.genres,
-                     book: newBook ,
-                     errors: errors.array()
+               if (err) 
+                  next(err);
+               else {
+                  for (let genre of results.genres) {
+                     if (newBook.genre.find(selectedGenre =>
+                        genre._id.toString() === selectedGenre._id.toString()))
+                        genre.checked = 'true';
                   }
-               );
+
+                  res.render(
+                     'bookForm', 
+                     {
+                        title: 'Create Book',
+                        authors: results.authors,
+                        genres: results.genres,
+                        book: newBook ,
+                        errors: errors.array()
+                     }
+                  );
+               }
             }
          )
       }
@@ -157,16 +166,20 @@ exports.bookDeleteGet = function(req, res, next) {
          bookinstances: cb => BookInstance.find({ book: req.params.id }, cb)
       },
       (err, results) => {
-         if (err) next(err);
-         if (!results.book) res.redirect('/catalog/books');
-         res.render(
-            'bookDelete',
-            {
-               title: 'Delete Book',
-               book: results.book,
-               bookinstances: results.bookinstances
-            }
-         );
+         if (err) 
+            next(err);
+         else if (!results.book) 
+            res.redirect('/catalog/books');
+         else {
+            res.render(
+               'bookDelete',
+               {
+                  title: 'Delete Book',
+                  book: results.book,
+                  bookinstances: results.bookinstances
+               }
+            );
+         }
       }
    );
 };
@@ -181,8 +194,9 @@ exports.bookDeletePost = function(req, res, next) {
          bookinstances: cb => BookInstance.find({ book: req.params.id }, cb)
       },
       (err, results) => {
-         if (err) next(err);
-         if (results.bookinstances.length) {
+         if (err) 
+            next(err);
+         else if (results.bookinstances.length) {
             res.render(
                'bookDelete',
                {
@@ -215,22 +229,26 @@ exports.bookUpdateGet = function(req, res, next) {
          genres: cb => Genre.find(cb)
       },
       (err, results) => {
-         if (err) next(err);
-         if (!results.book) next(createError(404, 'Book not found'));
-         for (let genre of results.genres) {
-            if (results.book.genre.find(
-               bookGenre => genre._id.toString() === bookGenre._id.toString()))
-               genre.checked = true;
-         }
-         res.render(
-            'bookForm',
-            {
-               title: 'Update Book',
-               book: results.book,
-               authors: results.authors,
-               genres: results.genres
+         if (err) 
+            next(err);
+         else if (!results.book) 
+            next(createError(404, 'Book not found'));
+         else {
+            for (let genre of results.genres) {
+               if (results.book.genre.find(
+                  bookGenre => genre._id.toString() === bookGenre._id.toString()))
+                  genre.checked = true;
             }
-         );
+            res.render(
+               'bookForm',
+               {
+                  title: 'Update Book',
+                  book: results.book,
+                  authors: results.authors,
+                  genres: results.genres
+               }
+            );
+         }
       }
    );
 };
@@ -272,24 +290,26 @@ exports.bookUpdatePost = [
                genres: cb => Genre.find(cb)
             },
             (err, results) => {
-               if (err) next(err);
-
-               for (let genre of results.genres) {
-                  if (updatedBook.genre.find(bookGenre =>
-                     genre._id.toString() === bookGenre._id.toString()))
-                     genre.checked = 'true';
-               }
-
-               res.render(
-                  'bookForm', 
-                  {
-                     title: 'Update Book',
-                     authors: results.authors,
-                     genres: results.genres,
-                     book: updatedBook ,
-                     errors: errors.array()
+               if (err) 
+                  next(err);
+               else {
+                  for (let genre of results.genres) {
+                     if (updatedBook.genre.find(bookGenre =>
+                        genre._id.toString() === bookGenre._id.toString()))
+                        genre.checked = 'true';
                   }
-               );
+
+                  res.render(
+                     'bookForm', 
+                     {
+                        title: 'Update Book',
+                        authors: results.authors,
+                        genres: results.genres,
+                        book: updatedBook ,
+                        errors: errors.array()
+                     }
+                  );
+               }
             }
          )
       }

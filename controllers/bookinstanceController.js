@@ -28,14 +28,17 @@ exports.bookinstanceDetail = function(req, res, next) {
       .findById(req.params.id)
       .populate('book')
       .then(inst => {
-         if (!inst) next(createError(404, "Book copy not found"));
-         res.render(
-            'bookinstanceDetail',
-            {
-               title: 'Book Instance',
-               inst: inst
-            }
-         )
+         if (!inst) 
+            next(createError(404, "Book copy not found"));
+         else {
+            res.render(
+               'bookinstanceDetail',
+               {
+                  title: 'Book Instance',
+                  inst: inst
+               }
+            );
+         }
       })
       .catch(next);
 };
@@ -132,18 +135,20 @@ exports.bookinstanceUpdateGet = function(req, res, next) {
          bookinstance: cb => BookInstance.findById(req.params.id, cb)
       },
       (err, results) => {
-         if (err) next(err);
-         if (!results.bookinstance) 
+         if (err) 
+            next(err);
+         else if (!results.bookinstance) 
             next(createError(404, 'Bookinstance not found'));
-
-         res.render(
-            'bookinstanceForm',
-            {
-               title: 'Update Copy',
-               books: results.books,
-               bookinstance: results.bookinstance
-            }
-         );
+         else {
+            res.render(
+               'bookinstanceForm',
+               {
+                  title: 'Update Copy',
+                  books: results.books,
+                  bookinstance: results.bookinstance
+               }
+            );
+         }
       }
    );
 };

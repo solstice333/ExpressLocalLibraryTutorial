@@ -43,16 +43,20 @@ exports.genreDetail = function(req, res, next) {
          genreBooks: cb => Book.find({ genre: req.params.id }, cb)
       },
       (err, results) => {
-         if (err) next(err);
-         if (!results.genre) next(createError(404, "Genre not found")); 
-         res.render(
-            'genreDetail', 
-            { 
-               title: 'Genre Detail', 
-               genre: results.genre,
-               genreBooks: results.genreBooks
-            }
-         );
+         if (err) 
+            next(err);
+         else if (!results.genre) 
+            next(createError(404, "Genre not found")); 
+         else {
+            res.render(
+               'genreDetail', 
+               { 
+                  title: 'Genre Detail', 
+                  genre: results.genre,
+                  genreBooks: results.genreBooks
+               }
+            );
+         }
       }
    );
 };
@@ -102,17 +106,20 @@ exports.genreDeleteGet = function(req, res, next) {
          genreBooks: cb => Book.find({ genre: req.params.id }, cb)
       },
       (err, results) => {
-         if (err) next(err);
-         if (!results.genre) res.redirect('/catalog/genres');
-
-         res.render(
-            'genreDelete',
-            {
-               title: 'Delete Genre',
-               genre: results.genre,
-               genreBooks: results.genreBooks
-            }
-         ); 
+         if (err) 
+            next(err);
+         else if (!results.genre) 
+            res.redirect('/catalog/genres');
+         else {
+            res.render(
+               'genreDelete',
+               {
+                  title: 'Delete Genre',
+                  genre: results.genre,
+                  genreBooks: results.genreBooks
+               }
+            ); 
+         }
       }
    );
 };
@@ -125,8 +132,9 @@ exports.genreDeletePost = function(req, res, next) {
          genreBooks: cb => Book.find({ genre: req.params.id }, cb)
       },
       (err, results) => {
-         if (err) next(err);
-         if (results.genreBooks.length) {
+         if (err) 
+            next(err);
+         else if (results.genreBooks.length) {
             res.render(
                'genreDelete',
                {

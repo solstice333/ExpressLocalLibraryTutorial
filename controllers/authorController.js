@@ -36,16 +36,20 @@ exports.authorDetail = function(req, res, next) {
                .sort('title').exec(cb)
       },
       (err, results) => { 
-         if (err) next(err);
-         if (!results.author) next(createError(404, 'Author not found'));
-         res.render(
-            'authorDetail', 
-            { 
-               title: 'Author Detail',
-               author: results.author,
-               books: results.books
-            }
-         );
+         if (err) 
+            next(err);
+         else if (!results.author) 
+            next(createError(404, 'Author not found'));
+         else {
+            res.render(
+               'authorDetail', 
+               { 
+                  title: 'Author Detail',
+                  author: results.author,
+                  books: results.books
+               }
+            );
+         }
       }
    );
 };
@@ -117,16 +121,20 @@ exports.authorDeleteGet = function(req, res, next) {
          authorsBooks: cb => Book.find({ author: req.params.id }, cb)
       },
       (err, results) => {
-         if (err) next(err);
-         if (!results.author) res.redirect('/catalog/authors');
-         else res.render(
-            'authorDelete',
-            {
-               title: 'Delete Author',
-               author: results.author,
-               authorsBooks: results.authorsBooks
-            }
-         );
+         if (err) 
+            next(err);
+         else if (!results.author) 
+            res.redirect('/catalog/authors');
+         else {
+            res.render(
+               'authorDelete',
+               {
+                  title: 'Delete Author',
+                  author: results.author,
+                  authorsBooks: results.authorsBooks
+               }
+            );
+         }
       }
    );
 };
@@ -143,8 +151,9 @@ exports.authorDeletePost = function(req, res, next) {
          authorsBooks: cb => Book.find({ author: req.params.id }, cb)
       },
       (err, results) => {
-         if (err) next(err);
-         if (results.authorsBooks.length) {
+         if (err) 
+            next(err);
+         else if (results.authorsBooks.length) {
             res.render(
                'authorDelete',
                {
@@ -172,14 +181,17 @@ exports.authorDeletePost = function(req, res, next) {
 exports.authorUpdateGet = function(req, res, next) {
    Author.findById(req.params.id)
       .then(author => {
-         if (!author) next(createError(404, 'Author not found'));
-         res.render(
-            'authorForm',
-            {
-               title: 'Update Author',
-               author: author
-            }
-         );
+         if (!author) 
+            next(createError(404, 'Author not found'));
+         else {
+            res.render(
+               'authorForm',
+               {
+                  title: 'Update Author',
+                  author: author
+               }
+            );
+         }
       })
       .catch(next);
 };
