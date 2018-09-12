@@ -17,7 +17,7 @@ exports.index = function(req, res) {
       genreCount: cb => Genre.countDocuments({}, cb) 
    },
    (err, results) => res.render('index', {
-      title: 'Local Library Home',
+      title: 'Kitty Korner',
       error: err,
       data: results
    }));
