@@ -15,7 +15,7 @@ $ cd path/to/express_locallibrary_tutorial
 install deps listed in package.json
 
 ```
-$ npm install && npm install --only=dev
+$ npm install
 ```
 
 serve mongo db
@@ -34,4 +34,10 @@ or run with debugging messages on:
 
 ```
 $ DEBUG=express_locallibrary_tutorial:* npm run devstart
+```
+
+or run tests
+
+```
+$ npm test
 ```
