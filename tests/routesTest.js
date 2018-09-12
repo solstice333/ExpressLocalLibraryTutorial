@@ -43,12 +43,12 @@ describe('Routes', function() {
          return request.get(getRequestOptionsForUri(indexUrl))
             .then((resp) => { 
                let $ = resp.body;
-               assert($('h1').first().text() === 'Local Library Home', 
-                  'expect first h1 to be "Local Library Home"');
+               assert($('h1').first().text() === 'Kitty Korner', 
+                  'expect first h1 to be "Kitty Korner"');
                assert(resp.statusCode === 200,
                   'expect response status 200');
-               assert($('head > title').text() === 'Local Library Home',
-                  'expect title to be "Local Library Home"');
+               assert($('head > title').text() === 'Kitty Korner',
+                  'expect title to be "Kitty Korner"');
             });
       });
    });
@@ -58,12 +58,12 @@ describe('Routes', function() {
          return request.get(getRequestOptionsForUri(catalogUrl))
             .then((resp) => { 
                let $ = resp.body;
-               assert($('h1').first().text() === 'Local Library Home', 
-                  'expect first h1 to be "Local Library Home"');
+               assert($('h1').first().text() === 'Kitty Korner', 
+                  'expect first h1 to be "Kitty Korner"');
                assert(resp.statusCode === 200,
                   'expect response status 200');
-               assert($('head > title').text() === 'Local Library Home',
-                  'expect title to be "Local Library Home"');
+               assert($('head > title').text() === 'Kitty Korner',
+                  'expect title to be "Kitty Korner"');
             });
       });
    });
