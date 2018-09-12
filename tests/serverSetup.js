@@ -1,4 +1,4 @@
-const localLibraryDb = 'mongodb://127.0.0.1:27017/localLibrary';
+const localLibraryDb = 'mongodb://127.0.0.1:27017/local_library';
 const mongoose = require('mongoose');
 const app = require('../app');
 const http = require('http');
